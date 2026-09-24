@@ -1,0 +1,33 @@
+# This is an implementation outline, not a Databricks Asset Bundle.
+# Create these tasks manually in Databricks Free Edition Jobs UI.
+
+job:
+  name: northpeak-retail-demand-forecast-demo
+  compute: serverless
+  parameters:
+    catalog: workspace
+    schema: northpeak_retail_demo
+  tasks:
+    - task_key: setup
+      notebook: notebooks/00_setup.py
+
+    - task_key: bronze_ingest
+      depends_on: [setup]
+      notebook: notebooks/01_bronze_ingest.py
+
+    - task_key: silver_transform
+      depends_on: [bronze_ingest]
+      notebook: notebooks/02_silver_transform.py
+
+    - task_key: gold_features
+      depends_on: [silver_transform]
+      notebook: notebooks/03_gold_features.py
+
+    - task_key: train_and_forecast
+      depends_on: [gold_features]
+      notebook: notebooks/04_train_and_forecast.py
+
+    - task_key: replenishment_orders
+      depends_on: [train_and_forecast]
+      notebook: notebooks/05_replenishment_orders.py
+
